@@ -1,0 +1,191 @@
+/* A style for a Template webpage for React course at MIPT */
+
+
+/* Content containers */
+
+body {
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+}
+
+#root {
+    width: 100vw;
+}
+
+#header {
+    height: 25vh;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background-color: lightgoldenrodyellow;
+    border-bottom: 2px solid slateblue;
+
+    text-align: center;
+
+    margin: 0;
+}
+
+#body {
+    background-color: darkgrey;
+
+    z-index: 1;
+
+    position: relative;
+}
+
+
+/* Header */
+
+#header-center-container {
+    width: 100%;
+
+    position: absolute;
+    top: 33%;
+}
+
+
+/* Right and left panels */
+
+#left-panel {
+    width: 26vw;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    margin: 0;
+    padding: 0;
+    height: 100%;
+
+    float: left;
+    clear: none;
+}
+
+#right-panel {
+    width: 74vw;
+
+    position: relative;
+    top: 0;
+    left: 26vw;
+
+    margin: 0;
+
+    clear: none;
+}
+
+
+/* Menu */
+
+#menu-container {
+    position: sticky;
+    top: 0;
+
+    width: 100%;
+}
+
+#menu-block {
+    padding: 3vh 2vw;
+
+    text-align: center;
+
+    border: 2px solid slateblue;
+    background-color: azure;
+}
+
+#menu > li {
+    display: block;
+
+    padding: 2vh 0;
+    margin: 2vh 0;
+
+    background-color: lightgoldenrodyellow;
+    border-radius: 10px;
+    border: 2px solid;
+    border-color: midnightblue;
+}
+
+#menu {
+    padding: 0;
+}
+
+
+/* Content */
+
+.content-row {
+    position: relative;
+
+    padding: 2vh 0;
+
+    text-align: center;
+}
+
+.content-cell-100 {
+    position: relative;
+    top: 0;
+
+    margin: 0 2vw;
+}
+
+.content-cell-50 {
+    position: relative;
+    top: 0;
+
+    width: 34vw;
+
+    margin: 0 2vw;
+}
+
+.content-cell-50-left {
+    left: 0;
+    float: left;
+}
+
+.content-cell-50-right {
+    left: 36vw;
+}
+
+.content-block {
+    position: relative;
+    padding: 2.5%;
+    margin: 0;
+
+    clear: none;
+
+    background-color: lightgoldenrodyellow;
+    border-radius: 10px;
+    border: 2px solid;
+    border-color: midnightblue;
+
+    text-align: justify;
+}
+
+
+/* Special elements */
+
+.warning {
+    height: 3vh;
+    width: 3vh;
+
+    position: absolute;
+    top: -1.5vh;
+    left: -1.5vh;
+
+    z-index: 2;
+
+    text-align: center;
+
+    background-color: crimson;
+    color: yellow;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.top-span {
+    font-size: x-large;
+    font-weight: bold;
+    text-align: center;
+}
