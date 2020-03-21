@@ -9,8 +9,7 @@ import reducer from '../../modules_redux/reducers';
 
 import NoteCreator from "./NoteCreator"
 
-import './App.scss'
-import styles from './App.scss';
+import styles from './App.module.scss';
 const cx = classnames.bind(styles)
 
 
@@ -30,8 +29,8 @@ const mapDispatchToProps = dispatch => ({
 
 
 const Header = () => (
-  <div id="header">
-    <div className="title">
+  <div id={cx("header")}>
+    <div className={cx("title")}>
       <h1>lkeep</h1>
     </div>
   </div>
@@ -39,9 +38,9 @@ const Header = () => (
 
 const Note = (passed) => (
   <div className={cx("note", `note-priority-${passed.note.priority}`)} key={passed.note.id}>
-    <div className="warning"><span>N</span></div>
-    <h1 className="name">{passed.note.name}</h1>
-    <p className="description">{passed.note.description}</p>
+    <div className={cx("warning")}><span>N</span></div>
+    <h1 className={cx("name")}>{passed.note.name}</h1>
+    <p className={cx("description")}>{passed.note.description}</p>
   </div>
 )
 
@@ -51,28 +50,28 @@ const Note = (passed) => (
  * In addition to holder functions, currently incapsulates some display logic.
  */
 const App = ({notes, actSetSort}) => {return (
-  <div id="react-container">
+  <div id={cx("react-container")}>
 
     <Header />
 
-    <div id="body">
+    <div id={cx("body")}>
 
-      <div id="left-panel">
-        <div className="sticky-container">
-          <div className="menu">
-            <div className="header">
+      <div id={cx("left-panel")}>
+        <div className={cx("sticky-container")}>
+          <div className={cx("menu")}>
+            <div className={cx("header")}>
               Sort order:
             </div>
-            <div className="status">{notes.sortType}</div>
+            <div className={cx("status")}>{notes.sortType}</div>
             <button value="name" onClick={e => actSetSort('name')}>Sort by NAME</button>
             <button value="priority" onClick={e => actSetSort('priority')}>Sort by PRIORITY</button>
           </div>
         </div>
       </div>
 
-      <div id="right-panel">
+      <div id={cx("right-panel")}>
 
-        <div id="notes-container">
+        <div id={cx("notes-container")}>
         {
           notes.list.map(note => (
             <Note note={note} key={note.id}/>
@@ -80,7 +79,7 @@ const App = ({notes, actSetSort}) => {return (
         }
         </div>
 
-        <div id="submit-container">
+        <div id={cx("submit-container")}>
           <NoteCreator />
         </div>
 
