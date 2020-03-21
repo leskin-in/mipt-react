@@ -62,8 +62,15 @@ const reducer = (state = defaultState, action) => {
 
   // The action is valid. Form a new state
   let new_state = {
-    ...state
+    notes: {
+      ...state.notes
+    },
+    noteToCreate: {
+      ...state.noteToCreate
+    }
   };
+  // A flag to signal the 'new_state.notes' was changed and needs sorting
+  let sort_required = false;
 
   if (action.type === ACT_MODIFY_NOTE_TO_ADD) {
     new_state.noteToCreate = {
@@ -82,10 +89,7 @@ const reducer = (state = defaultState, action) => {
   }
 
   if (action.type === ACT_ADD_NOTE) {
-    new_state.notes = {
-      ...state.notes
-    }
-
+    sort_required = true;
     new_state.notes.list.push(action.payload);
     new_state.noteToCreate = {
       ..._defaultState_noteToCreate_clear
@@ -93,31 +97,29 @@ const reducer = (state = defaultState, action) => {
   }
 
   if (action.type === ACT_SET_SORT) {
-    // This code works only as long as exactly one event is processed at a time.
-    // If 'new_state.notes' is assigned in earlier branches, this is incorrect
-    new_state.notes = {
-      ...state.notes
-    }
+    sort_required = true;
     new_state.notes.sortType = action.payload.sort;
   }
 
   // Sort nodes
-  switch (new_state.notes.sortType) {
-    case 'name':
-      new_state.notes.list.sort((noteA, noteB) => {
-        return noteA.name.localeCompare(noteB.name);
-      })
-      break;
-    case 'priority':
-      new_state.notes.list.sort((noteA, noteB) => {
-        return noteA.priority - noteB.priority;
-      });
-      break;
-    default:
-      console.warn('Unknown sort type:', new_state.notes.sortType)
+  if (sort_required) {
+    switch (new_state.notes.sortType) {
+      case 'name':
+        new_state.notes.list.sort((noteA, noteB) => {
+          return noteA.name.localeCompare(noteB.name);
+        })
+        break;
+      case 'priority':
+        new_state.notes.list.sort((noteA, noteB) => {
+          return noteA.priority - noteB.priority;
+        });
+        break;
+      default:
+        console.warn('Unknown sort type:', new_state.notes.sortType)
+    }
   }
 
-  console.log('New state:', new_state)
+  console.debug('State after reducer: ', new_state)
 
   // Return the modified state
   return new_state;
