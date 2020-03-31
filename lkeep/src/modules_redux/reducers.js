@@ -62,12 +62,7 @@ const reducer = (state = defaultState, action) => {
 
   // The action is valid. Form a new state
   let new_state = {
-    notes: {
-      ...state.notes
-    },
-    noteToCreate: {
-      ...state.noteToCreate
-    }
+    ...state
   };
   // A flag to signal the 'new_state.notes' was changed and needs sorting
   let sort_required = false;
@@ -89,14 +84,25 @@ const reducer = (state = defaultState, action) => {
   }
 
   if (action.type === ACT_ADD_NOTE) {
+    new_state.notes = {
+      ...state.notes
+    }
+    new_state.notes.list = [...state.notes.list]
+
     sort_required = true;
     new_state.notes.list.push(action.payload);
+
     new_state.noteToCreate = {
       ..._defaultState_noteToCreate_clear
     }
   }
 
   if (action.type === ACT_SET_SORT) {
+    new_state.notes = {
+      ...state.notes
+    }
+    new_state.notes.list = [...state.notes.list]
+
     sort_required = true;
     new_state.notes.sortType = action.payload.sort;
   }
