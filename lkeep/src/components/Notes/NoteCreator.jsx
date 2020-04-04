@@ -6,29 +6,30 @@ import classnames from 'classnames/bind';
 
 import { actModifyNoteToAdd as aMNTA, actAddNote as aAN } from '../../modules_redux/actions'
 
-import styles from './App.module.scss';
+import styles from '../App/App.module.scss';
 const cx = classnames.bind(styles)
 
 
 /* Redux integration */
 
 const mapStateToProps = state => ({
-  noteToCreate: state.noteToCreate
+  projectId: state.projectId,
+  noteToCreate: state.noteToCreate,
 });
 
 const mapDispatchToProps = dispatch => ({
   actModifyNoteToAdd: (name, description, priority) => dispatch(aMNTA(name, description, priority)),
-  actAddNote: (id, name, description, priority) => dispatch(aAN(id, name, description, priority))
+  actAddNote: (projectId, id, name, description, priority) => dispatch(aAN(projectId, id, name, description, priority)),
 });
 
 /* */
 
 
-const NoteCreator = ({noteToCreate, actAddNote, actModifyNoteToAdd}) => {return (
+const NoteCreator = ({projectId, noteToCreate, actAddNote, actModifyNoteToAdd}) => (
   <div className={cx("note", `note-priority-${noteToCreate.priority}`)}>
     <form onSubmit={event => {
       event.preventDefault();
-      return actAddNote(uuidv4(), noteToCreate.name, noteToCreate.description, noteToCreate.priority)
+      return actAddNote(projectId, uuidv4(), noteToCreate.name, noteToCreate.description, noteToCreate.priority)
     }}>
       <div className={cx("note-create-button")}>
         <input className={cx("note-create-button")} type="submit" value="Create a note"/>
@@ -80,7 +81,7 @@ const NoteCreator = ({noteToCreate, actAddNote, actModifyNoteToAdd}) => {return 
       </div>
     </form>
   </div>
-)}
+)
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoteCreator);
