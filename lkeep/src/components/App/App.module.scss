@@ -117,6 +117,7 @@ body {
   position: relative;
 
   z-index: 1;
+  width: 100%;
 
   margin: 0;
   padding: 0;
@@ -199,6 +200,9 @@ body {
 }
 .note-priority-1 {
   background: #ffbcad;
+}
+.project {
+  background: ghostwhite;
 }
 
 #submit-container {

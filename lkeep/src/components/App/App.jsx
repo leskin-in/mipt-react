@@ -1,13 +1,15 @@
 import React from 'react';
 
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { createStore } from "redux";
 import { Provider, connect } from "react-redux";
 import classnames from 'classnames/bind';
 
-import { actSetSort as aSS } from '../../modules_redux/actions'
-import reducer from '../../modules_redux/reducers';
+import NotesBody from '../Notes/Notes'
+import ProjectsBody from '../Projects/Projects'
 
-import NoteCreator from "./NoteCreator"
+import reducer from '../../modules_redux/reducers'
+import { actSetProject as aSP } from '../../modules_redux/actions'
 
 import styles from './App.module.scss';
 const cx = classnames.bind(styles)
@@ -18,11 +20,10 @@ const cx = classnames.bind(styles)
 const store = createStore(reducer);
 
 const mapStateToProps = state => ({
-  notes: state.notes
 });
 
 const mapDispatchToProps = dispatch => ({
-  actSetSort: (type) => dispatch(aSS(type))
+  actSetProject: (projectId) => dispatch(aSP(projectId))
 });
 
 /* */
@@ -34,69 +35,46 @@ const Header = () => (
       <h1>lkeep</h1>
     </div>
   </div>
-)
+);
 
-const Note = (passed) => (
-  <div className={cx("note", `note-priority-${passed.note.priority}`)} key={passed.note.id}>
-    <div className={cx("warning")}><span>N</span></div>
-    <h1 className={cx("name")}>{passed.note.name}</h1>
-    <p className={cx("description")}>{passed.note.description}</p>
-  </div>
-)
+
+const Project = ({ match, actSetProject }) => {
+  console.log(match)
+  let projectId = match.params.projectId;
+  actSetProject(projectId)
+
+  return (
+    <NotesBody />
+  );
+}
+
+const ProjectConnected = connect(mapStateToProps, mapDispatchToProps)(Project);
+
 
 /*
  * The application.
  *
  * In addition to holder functions, currently incapsulates some display logic.
  */
-const App = ({notes, actSetSort}) => {return (
-  <div id={cx("react-container")}>
+const App = () => (
+  <BrowserRouter>
+    <div id={cx("react-container")}>
 
-    <Header />
+      <Header />
 
-    <div id={cx("body")}>
+      <Switch>
+        <Route path='/projects/' component={ProjectsBody} />
+        <Route path='/project/:projectId/' component={ProjectConnected} />
+        <Redirect to='/projects/' />
+      </Switch>
 
-      <div id={cx("left-panel")}>
-        <div className={cx("sticky-container")}>
-          <div className={cx("menu")}>
-            <div className={cx("header")}>
-              Sort order:
-            </div>
-            <div className={cx("status")}>{notes.sortType}</div>
-            <button value="name" onClick={e => actSetSort('name')}>Sort by NAME</button>
-            <button value="priority" onClick={e => actSetSort('priority')}>Sort by PRIORITY</button>
-          </div>
-        </div>
-      </div>
-
-      <div id={cx("right-panel")}>
-
-        <div id={cx("notes-container")}>
-        {
-          notes.list.map(note => (
-            <Note note={note} key={note.id}/>
-          ))
-        }
-        </div>
-
-        <div id={cx("submit-container")}>
-          <NoteCreator />
-        </div>
-
-      </div>
     </div>
-
-  </div>
-)}
-
-
-/* Redux integration */
-
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+  </BrowserRouter>
+)
 
 const AppContainer = () => (
   <Provider store={store}>
-    <ConnectedApp />
+    <App />
   </Provider>
 );
 
