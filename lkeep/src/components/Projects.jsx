@@ -2,12 +2,11 @@ import React from 'react';
 
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 import classnames from 'classnames/bind';
 
-import { actModifyProjectToCreate as aMPTC, actAddProject as aAP } from '../../modules_redux/actions'
+import { actModifyProjectToCreate, actCreateProject } from '../modules_redux/actions'
 
-import styles from '../App/App.module.scss';
+import styles from './App.module.scss';
 const cx = classnames.bind(styles)
 
 
@@ -19,8 +18,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  actAddProject: (id, name) => dispatch(aAP(id, name)),
-  actModifyProjectToCreate: (key, value) => dispatch(aMPTC(key, value)),
+  createProject_fn: (name) => dispatch(actCreateProject(dispatch, name)),
+  modifyProjectToCreate_fn: (key, value) => dispatch(actModifyProjectToCreate(key, value)),
 });
 
 /* */
@@ -50,11 +49,11 @@ const Project = ({project}) => (
 )
 
 
-const ProjectCreator = ({projectToCreate, actAddProject, actModifyProjectToCreate}) => (
+const ProjectCreator = ({projectToCreate, createProject_fn, modifyProjectToCreate_fn}) => (
   <div className={cx("note", "project")}>
     <form onSubmit={event => {
       event.preventDefault();
-      return actAddProject(uuidv4(), projectToCreate.name)
+      return createProject_fn(projectToCreate.name)
     }}>
       <div className={cx("note-create-button")}>
         <input className={cx("note-create-button")} type="submit" value="Create a project"/>
@@ -63,7 +62,7 @@ const ProjectCreator = ({projectToCreate, actAddProject, actModifyProjectToCreat
         className={cx("name")}
         type="text" name="name" id={cx("create-name")}
         value={projectToCreate.name}
-        onChange={e => actModifyProjectToCreate(
+        onChange={e => modifyProjectToCreate_fn(
           'name', e.target.value,
         )}
       />
@@ -72,7 +71,7 @@ const ProjectCreator = ({projectToCreate, actAddProject, actModifyProjectToCreat
 )
 
 
-const Projects = ({projects, projectToCreate, actAddProject, actModifyProjectToCreate}) => (
+const Projects = ({projects, projectToCreate, createProject_fn, modifyProjectToCreate_fn}) => (
   <div id={cx("right-panel")}>
     <div id={cx("notes-container")}>
       {
@@ -83,16 +82,16 @@ const Projects = ({projects, projectToCreate, actAddProject, actModifyProjectToC
     </div>
 
     <div id={cx("submit-container")}>
-      <ProjectCreator projectToCreate={projectToCreate} actAddProject={actAddProject} actModifyProjectToCreate={actModifyProjectToCreate} />
+      <ProjectCreator projectToCreate={projectToCreate} createProject_fn={createProject_fn} modifyProjectToCreate_fn={modifyProjectToCreate_fn} />
     </div>
   </div>
 )
 
 
-const ProjectsBody = ({projects, projectToCreate, actAddProject, actModifyProjectToCreate}) => (
+const ProjectsBody = ({projects, projectToCreate, createProject_fn, modifyProjectToCreate_fn}) => (
   <div id={cx("body")}>
     <ProjectsMenu />
-    <Projects projects={projects} projectToCreate={projectToCreate} actAddProject={actAddProject} actModifyProjectToCreate={actModifyProjectToCreate} />
+    <Projects projects={projects} projectToCreate={projectToCreate} createProject_fn={createProject_fn} modifyProjectToCreate_fn={modifyProjectToCreate_fn} />
   </div>
 )
 

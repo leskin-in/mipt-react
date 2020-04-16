@@ -4,29 +4,29 @@ import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import classnames from 'classnames/bind';
 
+import { actChooseSort } from '../modules_redux/actions'
+
 import NoteCreator from "./NoteCreator"
 
-import { actSetSort as aSS } from '../../modules_redux/actions'
-
-import styles from '../App/App.module.scss';
+import styles from './App.module.scss';
 const cx = classnames.bind(styles)
 
 
 /* Redux integration */
 
 const mapStateToProps = state => ({
-  projectId: state.projectId,
-  notes: state.projectData[state.projectId].notes,
+  notes: state.notes,
+  notesSortType: state.notesSortType,
 });
 
 const mapDispatchToProps = dispatch => ({
-  actSetSort: (projectId, type) => dispatch(aSS(projectId, type))
+  chooseSort_fn: (type) => dispatch(actChooseSort(type))
 });
 
 /* */
 
 
-const NotesMenu = ({projectId, notes, actSetSort}) => (
+const NotesMenu = ({notesSortType, chooseSort_fn}) => (
   <div id={cx("left-panel")}>
     <div className={cx("sticky-container")}>
       <div className={cx("menu")}>
@@ -38,9 +38,9 @@ const NotesMenu = ({projectId, notes, actSetSort}) => (
         <div className={cx("header")}>
           Sort order:
         </div>
-        <div className={cx("status")}>{notes.sortType}</div>
-        <button value="name" onClick={e => actSetSort(projectId, 'name')}>Sort by NAME</button>
-        <button value="priority" onClick={e => actSetSort(projectId, 'priority')}>Sort by PRIORITY</button>
+        <div className={cx("status")}>{!notesSortType ? "NONE" : notesSortType}</div>
+        <button value="name" onClick={e => chooseSort_fn('name')}>Sort by NAME</button>
+        <button value="priority" onClick={e => chooseSort_fn('priority')}>Sort by PRIORITY</button>
       </div>
     </div>
   </div>
@@ -59,7 +59,7 @@ const Notes = ({notes}) => (
   <div id={cx("right-panel")}>
     <div id={cx("notes-container")}>
       {
-        notes.list.map(note => (
+        notes.map(note => (
           <Note note={note} key={note.id}/>
         ))
       }
@@ -72,12 +72,11 @@ const Notes = ({notes}) => (
 );
 
 
-const NotesBody = ({projectId, notes, actSetSort}) => (
+const NotesBody = ({notes, notesSortType, chooseSort_fn}) => (
   <div id={cx("body")}>
-    <NotesMenu projectId={projectId} notes={notes} actSetSort={actSetSort} />
+    <NotesMenu notesSortType={notesSortType} chooseSort_fn={chooseSort_fn} />
     <Notes notes={notes} />
   </div>
 );
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotesBody);
