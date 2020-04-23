@@ -17,7 +17,9 @@ export const actSetProjects = (projects) => ({
 
 export const ACT_CHOOSE_PROJECT = "ACT_CHOOSE_PROJECT"
 export const actChooseProject = (dispatch, projectId) => {
-  backendApiRequest(`/projects/${projectId}/tasks/`).then(res => dispatch(actSetNotes(res)))
+  backendApiRequest(`/projects/${projectId}/tasks/`).then(
+    res => dispatch(actSetNotes(res))
+  )
 
   return {
     type: ACT_CHOOSE_PROJECT,
@@ -31,8 +33,11 @@ export const ACT_CREATE_PROJECT = "ACT_CREATE_PROJECT"
 export const actCreateProject = (dispatch, name) => {
   backendApiRequest(`/projects/`, {}, 'POST', {
     name: name,
-  })
-  backendApiRequest(`/projects/`).then(res => dispatch(actSetProjects(res)))
+  }).then(
+    res => backendApiRequest(`/projects/`)
+  ).then(
+    res => dispatch(actSetProjects(res))
+  )
 
   return {
     type: ACT_CREATE_PROJECT,
@@ -76,8 +81,11 @@ export const actCreateNote = (dispatch, projectId, name, description, priority) 
     name: name,
     description: description,
     priority: priority
-  })
-  backendApiRequest(`/projects/${projectId}/tasks/`).then(res => dispatch(actSetNotes(res)))
+  }).then(
+    res => backendApiRequest(`/projects/${projectId}/tasks/`)
+  ).then(
+    res => dispatch(actSetNotes(res))
+  )
 
   return {
     type: ACT_CREATE_NOTE,

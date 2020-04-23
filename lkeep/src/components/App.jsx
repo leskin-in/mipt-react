@@ -57,7 +57,9 @@ const NotesWrapper = connect(
 
 
 const ProjectsWrapperObject = ({ setProjects_fn }) => {
-  backendApiRequest(`/projects/`).then(res => setProjects_fn(res))
+  backendApiRequest(`/projects/`).then(
+    res => setProjects_fn(res)
+  )
   return (
     <ProjectsBody />
   )
