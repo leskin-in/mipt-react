@@ -2,10 +2,17 @@
  * Redux reducers definitions
  */
 
-import { ACT_SET_SORT, ACT_ADD_NOTE, ACT_MODIFY_NOTE_TO_ADD } from "./actions";
+import {
+  ACT_SET_PROJECTS, ACT_CHOOSE_PROJECT, ACT_CREATE_PROJECT, ACT_MODIFY_PROJECT_TO_CREATE,
+  ACT_SET_NOTES, ACT_CHOOSE_SORT, ACT_CREATE_NOTE, ACT_MODIFY_NOTE_TO_CREATE
+} from "./actions";
 
 
 /* Default state definition */
+
+const _defaultState_projectToCreate_clear = {
+  name: '',
+}
 
 const _defaultState_noteToCreate_clear = {
   name: '',
@@ -14,30 +21,20 @@ const _defaultState_noteToCreate_clear = {
 }
 
 const defaultState = {
-  notes: {
-    sortType: 'none',
-    list: [
-      {
-        id: '1a5a5e52e-a449-4f39-8311-24fa59f9cd6b',
-        name: 'C. A note with name "C"',
-        description: 'Note C description (priority 2)',
-        priority: 2
-      },
-      {
-        id: 'a9fb86f2-01b3-4634-9569-9051f52ef171',
-        name: 'B. A note with name "B"',
-        description: 'Note B description (priority 1)',
-        priority: 1
-      },
-      {
-        id: '33cb6419-d72f-44a1-b2f6-13a8101441af',
-        name: 'A. A note with name "A"',
-        description: 'Note A description (priority 3). Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        priority: 3
-      }
-    ],
+  // 'projects': A list of all projects
+  projects: [],
+  // 'projects': A project to create
+  projectToCreate: {
+    ..._defaultState_projectToCreate_clear,
   },
 
+  // 'notes': The current project ID
+  projectId: null,
+  // 'notes': A list of tasks of the selected project
+  notes: [],
+  // 'notes': sort type of tasks list
+  notesSortType: null,
+  // 'notes': a task to create. Intentionally the same for all projects
   noteToCreate: {
     ..._defaultState_noteToCreate_clear,
   },
@@ -47,88 +44,106 @@ const defaultState = {
 /* The reducer */
 
 const reducer = (state = defaultState, action) => {
-  console.log('Reducer called', 'State:', state, 'Action: ', action)
+  console.debug('Reducer called.\n', 'State:\n', state, 'Action:\n', action)
 
   // Check the given action is valid
   switch (action.type) {
-    case ACT_MODIFY_NOTE_TO_ADD:
-    case ACT_ADD_NOTE:
-    case ACT_SET_SORT:
+    case ACT_SET_PROJECTS:
+    case ACT_CHOOSE_PROJECT:
+    case ACT_CREATE_PROJECT:
+    case ACT_MODIFY_PROJECT_TO_CREATE:
+    case ACT_SET_NOTES:
+    case ACT_CHOOSE_SORT:
+    case ACT_CREATE_NOTE:
+    case ACT_MODIFY_NOTE_TO_CREATE:
+
       break;
+
     default:
-      console.warn('Unknown action:', action)
+      console.warn('Unknown action:\n', action)
       return state;
   }
+
+  console.log('Action:\n', action)
 
   // The action is valid. Form a new state
   let new_state = {
     ...state
   };
-  // A flag to signal the 'new_state.notes' was changed and needs sorting
-  let sort_required = false;
 
-  if (action.type === ACT_MODIFY_NOTE_TO_ADD) {
-    new_state.noteToCreate = {
-      ...state.noteToCreate
-    }
+  /* 'projects' */
 
-    if (action.payload.name != null) {
-      new_state.noteToCreate.name = action.payload.name;
-    }
-    if (action.payload.description != null) {
-      new_state.noteToCreate.description = action.payload.description;
-    }
-    if (action.payload.priority != null) {
-      new_state.noteToCreate.priority = action.payload.priority;
-    }
+  if (action.type === ACT_SET_PROJECTS) {
+    new_state.projects = [...action.payload.projects]
+    return new_state;
   }
 
-  if (action.type === ACT_ADD_NOTE) {
-    new_state.notes = {
-      ...state.notes
-    }
-    new_state.notes.list = [...state.notes.list]
-
-    sort_required = true;
-    new_state.notes.list.push(action.payload);
-
-    new_state.noteToCreate = {
-      ..._defaultState_noteToCreate_clear
-    }
+  if (action.type === ACT_CHOOSE_PROJECT) {
+    new_state.projectId = action.payload.projectId
+    return new_state;
   }
 
-  if (action.type === ACT_SET_SORT) {
-    new_state.notes = {
-      ...state.notes
+  if (action.type === ACT_CREATE_PROJECT) {
+    new_state.projectToCreate = {
+      ..._defaultState_projectToCreate_clear
     }
-    new_state.notes.list = [...state.notes.list]
-
-    sort_required = true;
-    new_state.notes.sortType = action.payload.sort;
+    return new_state;
   }
 
-  // Sort nodes
-  if (sort_required) {
-    switch (new_state.notes.sortType) {
+  if (action.type === ACT_MODIFY_PROJECT_TO_CREATE) {
+    new_state.projectToCreate = {
+      ...state.projectToCreate
+    };
+    new_state.projectToCreate[action.payload.key] = action.payload.value;
+    return new_state;
+  }
+
+  /* 'notes' */
+
+  if ([ACT_SET_NOTES, ACT_CHOOSE_SORT].indexOf(action.type) !== -1) {
+    if (action.type === ACT_SET_NOTES) {
+      new_state.notes = [...action.payload.notes]
+    }
+
+    if (action.type === ACT_CHOOSE_SORT) {
+      new_state.notes = [...state.notes]
+      new_state.notesSortType = action.payload.sort
+    }
+
+    switch (new_state.notesSortType) {
+      case null:
+        break;
       case 'name':
-        new_state.notes.list.sort((noteA, noteB) => {
+        new_state.notes.sort((noteA, noteB) => {
           return noteA.name.localeCompare(noteB.name);
         })
         break;
       case 'priority':
-        new_state.notes.list.sort((noteA, noteB) => {
+        new_state.notes.sort((noteA, noteB) => {
           return noteA.priority - noteB.priority;
-        });
+        })
         break;
       default:
-        console.warn('Unknown sort type:', new_state.notes.sortType)
+        console.debug('Unknown sort type: ', new_state.notesSortType)
     }
+
+    return new_state;
   }
 
-  console.debug('State after reducer: ', new_state)
+  if (action.type === ACT_CREATE_NOTE) {
+    new_state.noteToCreate = {
+      ..._defaultState_noteToCreate_clear
+    }
+    return new_state;
+  }
 
-  // Return the modified state
-  return new_state;
+  if (action.type === ACT_MODIFY_NOTE_TO_CREATE) {
+    new_state.noteToCreate = {
+      ...state.noteToCreate
+    }
+    new_state.noteToCreate[action.payload.key] = action.payload.value;
+    return new_state;
+  }
 };
 
 export default reducer;
