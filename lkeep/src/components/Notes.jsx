@@ -42,6 +42,11 @@ const NotesMenu = ({notesSortType, chooseSort_fn}) => (
         <button value="name" onClick={e => chooseSort_fn('name')}>Sort by NAME</button>
         <button value="priority" onClick={e => chooseSort_fn('priority')}>Sort by PRIORITY</button>
       </div>
+      <div className={cx("menu")}>
+        <div className={cx("header")}>
+          <Link to="/signin/">Logout</Link>
+        </div>
+      </div>
     </div>
   </div>
 );

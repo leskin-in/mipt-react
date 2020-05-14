@@ -105,3 +105,63 @@ export const actModifyNoteToCreate = (key, value) => ({
     value: value,
   }
 })
+
+
+/* 'signin' */
+
+export const ACT_SIGNIN_FORM_MODIFY = "ACT_SIGNIN_FORM_MODIFY"
+export const actSigninFormModify = (key, value) => ({
+  type: ACT_SIGNIN_FORM_MODIFY,
+  payload: {
+    key: key,
+    value: value,
+  }
+})
+
+export const ACT_LOGIN = "ACT_LOGIN"
+export const actLogin = (dispatch, login, password) => {
+  backendApiRequest('/login/', {}, 'POST', {
+    login: login,
+    password: password
+  }).then(
+    res => {
+      return res ? dispatch(actSetAuthenticationToken(res.token)) : null
+    }
+  )
+
+  return {
+    type: ACT_LOGIN,
+    payload: {}
+  }
+}
+
+export const ACT_REGISTER = "ACT_REGISTER"
+export const actRegister = (dispatch, login, password) => {
+  backendApiRequest('/register/', {}, 'POST', {
+    login: login,
+    password: password
+  }).then(
+    res => {
+      return res ? dispatch(actSetAuthenticationToken(res.token)) : null
+    }
+  )
+
+  return {
+    type: ACT_REGISTER,
+    payload: {}
+  }
+}
+
+export const ACT_LOGOUT = "ACT_LOGOUT"
+export const actLogout = () => ({
+  type: ACT_LOGOUT,
+  payload: {}
+})
+
+export const ACT_SET_AUTHENTICATION_TOKEN = "ACT_SET_AUTHENTICATION_TOKEN"
+export const actSetAuthenticationToken = (token) => ({
+  type: ACT_SET_AUTHENTICATION_TOKEN,
+  payload: {
+    token: token
+  }
+})

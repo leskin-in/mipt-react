@@ -4,8 +4,11 @@
 
 import {
   ACT_SET_PROJECTS, ACT_CHOOSE_PROJECT, ACT_CREATE_PROJECT, ACT_MODIFY_PROJECT_TO_CREATE,
-  ACT_SET_NOTES, ACT_CHOOSE_SORT, ACT_CREATE_NOTE, ACT_MODIFY_NOTE_TO_CREATE
+  ACT_SET_NOTES, ACT_CHOOSE_SORT, ACT_CREATE_NOTE, ACT_MODIFY_NOTE_TO_CREATE,
+  ACT_SIGNIN_FORM_MODIFY, ACT_LOGIN, ACT_REGISTER, ACT_LOGOUT, ACT_SET_AUTHENTICATION_TOKEN
 } from "./actions";
+
+import { setToken, removeToken } from "../utilities/token"
 
 
 /* Default state definition */
@@ -20,7 +23,12 @@ const _defaultState_noteToCreate_clear = {
   priority: 3,
 }
 
-const defaultState = {
+const _defaultState_singin_clear = {
+  login: '',
+  password: ''
+}
+
+const _defaultState_clear = {
   // 'projects': A list of all projects
   projects: [],
   // 'projects': A project to create
@@ -38,6 +46,15 @@ const defaultState = {
   noteToCreate: {
     ..._defaultState_noteToCreate_clear,
   },
+
+  // 'signin': the sign-in form
+  signin: {
+    ..._defaultState_singin_clear,
+  },
+}
+
+const defaultState = {
+  ..._defaultState_clear
 };
 
 
@@ -56,6 +73,11 @@ const reducer = (state = defaultState, action) => {
     case ACT_CHOOSE_SORT:
     case ACT_CREATE_NOTE:
     case ACT_MODIFY_NOTE_TO_CREATE:
+    case ACT_SIGNIN_FORM_MODIFY:
+    case ACT_LOGIN:
+    case ACT_REGISTER:
+    case ACT_LOGOUT:
+    case ACT_SET_AUTHENTICATION_TOKEN:
 
       break;
 
@@ -144,6 +166,34 @@ const reducer = (state = defaultState, action) => {
     new_state.noteToCreate[action.payload.key] = action.payload.value;
     return new_state;
   }
+
+  /* 'signin' */
+
+  if (action.type === ACT_SIGNIN_FORM_MODIFY) {
+    new_state.signin = {
+      ...state.signin
+    };
+    new_state.signin[action.payload.key] = action.payload.value;
+    return new_state;
+  }
+
+  if (action.type === ACT_LOGOUT) {
+    removeToken()
+    new_state.signin = {
+      ..._defaultState_singin_clear
+    }
+    return new_state;
+  }
+
+  if (action.type === ACT_SET_AUTHENTICATION_TOKEN) {
+    setToken(action.payload.token)
+    new_state.signin = {
+      ..._defaultState_singin_clear
+    }
+    return new_state;
+  }
+
+  return new_state;
 };
 
 export default reducer;

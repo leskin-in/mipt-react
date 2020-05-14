@@ -45,6 +45,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    a {
+      color: inherit;
+      text-decoration: inherit;
+    }
   }
 }
 
@@ -189,6 +194,30 @@ body {
 
     span {
       font: bolder small sans-serif;
+    }
+  }
+
+  .alignable-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      input {
+        width: 100%;
+        margin: 1vh 0;
+
+        border: $border-normal;
+        background: $background-highlight;
+
+        font: medium sans-serif;
+        vertical-align: middle;
+      }
     }
   }
 }

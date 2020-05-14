@@ -1,17 +1,28 @@
 /*
- * A utility module to retrieve tokens
+ * A utility module to work with tokens
  */
 
 
-const TOKEN_CONSTANT_PART = 'd0c45c55-ccd8-4bd6-8adc-43117cc87052'
+const TOKEN_V = 'atoken'
 
 
 /**
- * Get a token for request.
- * @returns the token (string)
+ * Set the token
  */
-const retrieveToken = () => {
-  return window.navigator.userAgent + ' ' + new Date().getDate().toString() + ' ' + TOKEN_CONSTANT_PART
+export const setToken = (token) => {
+  window.localStorage.setItem(TOKEN_V, token)
 }
 
-export default retrieveToken
+/**
+ * Remove the token
+ */
+export const removeToken = () => {
+  window.localStorage.removeItem(TOKEN_V)
+}
+
+/**
+ * Retrieve the token. Returns 'null' if token is not available
+ */
+export const retrieveToken = () => {
+  return (window.localStorage.getItem(TOKEN_V))
+}

@@ -35,6 +35,11 @@ const ProjectsMenu = () => (
           <Link to="/projects/">Projects</Link>
         </div>
       </div>
+      <div className={cx("menu")}>
+        <div className={cx("header")}>
+          <Link to="/signin/">Logout</Link>
+        </div>
+      </div>
     </div>
   </div>
 );
