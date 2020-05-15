@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom'
 import { createStore } from "redux"
 import { Provider, connect } from "react-redux"
 import classnames from 'classnames/bind'
@@ -12,8 +12,10 @@ import { actChooseProject, actSetProjects } from '../modules_redux/actions'
 
 import NotesBody from './Notes'
 import ProjectsBody from './Projects'
+import SigninBody from './Signin'
 
 import styles from './App.module.scss'
+import { retrieveToken } from '../utilities/token'
 const cx = classnames.bind(styles)
 
 
@@ -35,7 +37,7 @@ const store = createStore(reducer);
 const Header = () => (
   <div id={cx("header")}>
     <div className={cx("title")}>
-      <h1>lkeep</h1>
+      <Link to="/"><h1>lkeep</h1></Link>
     </div>
   </div>
 );
@@ -73,6 +75,31 @@ const ProjectsWrapper = connect(
 )(ProjectsWrapperObject)
 
 
+const AppSigninSwitch = ({ signin }) => (
+  <Switch>
+    <Route path='/signin/' component={SigninBody} />
+    {retrieveToken() ?
+      (
+        <Switch>
+          <Route path='/projects/' component={ProjectsWrapper} />
+          <Route path='/project/:projectId/' component={NotesWrapper} />
+          <Redirect to='/projects/' />
+        </Switch>
+      ) : (
+        <Redirect to='/signin/' />
+      )
+    }
+  </Switch>
+)
+
+const AppSigninSwitchConnected = connect(
+  (state) => ({
+    signin: state.signin,
+  }),
+  (dispatch) => ({})
+)(AppSigninSwitch)
+
+
 /*
  * The application "main render object".
  */
@@ -82,13 +109,8 @@ const App = () => (
       <div id={cx("react-container")}>
 
         <Header />
-
-        <Switch>
-          <Route path='/projects/' component={ProjectsWrapper} />
-          <Route path='/project/:projectId/' component={NotesWrapper} />
-          <Redirect to='/projects/' />
-        </Switch>
-
+        <AppSigninSwitchConnected />
+        
       </div>
     </BrowserRouter>
   </Provider>
